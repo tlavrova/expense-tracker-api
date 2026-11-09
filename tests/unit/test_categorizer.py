@@ -1,3 +1,5 @@
+import pytest
+
 from expense_tracker.categorizer import categorize
 
 
@@ -11,3 +13,8 @@ def test_categorize_lidl_as_groceries():
 
 def test_categorize_unknown_description_as_other():
     assert categorize("Cinema tickets") == "other"
+
+
+def test_categorize_rejects_blank_description():
+    with pytest.raises(ValueError, match="description"):
+        categorize("   ")

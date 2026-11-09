@@ -1,8 +1,10 @@
 from datetime import date
 from decimal import Decimal
 
+import pytest
+
 from expense_tracker.models import Expense
-from expense_tracker.summary import monthly_total, total_by_category
+from expense_tracker.summary import budget_status, monthly_total, total_by_category
 
 
 def make_expense(amount, day, category="other"):
@@ -50,3 +52,22 @@ def test_total_by_category_sums_each_category():
 
 def test_total_by_category_of_no_expenses_is_empty():
     assert total_by_category([]) == {}
+
+def test_budget_status_returns_ok_below_80_percent():
+    expenses = [make_expense("500.00", date(2026, 11, 1))]
+    assert budget_status(expenses, Decimal("1000")) == "ok"
+
+
+def test_budget_status_returns_warning_at_80_percent():
+    expenses = [make_expense("800.00", date(2026, 11, 1))]
+    assert budget_status(expenses, Decimal("1000")) == "warning"
+
+
+def test_budget_status_returns_exceeded_over_100_percent():
+    expenses = [make_expense("1000.01", date(2026, 11, 1))]
+    assert budget_status(expenses, Decimal("1000")) == "exceeded"
+
+
+def test_budget_status_rejects_negative_budget():
+    with pytest.raises(ValueError, match="budget"):
+        budget_status([], Decimal("-100"))
