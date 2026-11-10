@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
 
@@ -13,6 +13,7 @@ class Expense:
     date: date
     description: str
     category: str
+    id: int | None = field(default=None, compare=False)
 
     def __post_init__(self):
         if self.amount < 0:
