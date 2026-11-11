@@ -1,3 +1,5 @@
+import pytest
+
 from expense_tracker.db import add_expense
 
 def test_post_expense_returns_201_with_the_saved_expense(client):
@@ -77,3 +79,42 @@ def test_delete_missing_expense_returns_404(client):
 
     assert response.status_code == 404
     assert response.json() == {"detail": "expense 999 not found"}
+
+
+VALID_PAYLOAD = {
+    "amount": "125.50",
+    "currency": "NOK",
+    "date": "2026-11-09",
+    "description": "Lidl weekly shop",
+}
+
+
+def without(field):
+    return {key: value for key, value in VALID_PAYLOAD.items() if key != field}
+
+
+def with_value(field, value):
+    return {**VALID_PAYLOAD, field: value}
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        pytest.param({}, id="empty body"),
+        pytest.param(without("amount"), id="missing amount"),
+        pytest.param(without("currency"), id="missing currency"),
+        pytest.param(without("date"), id="missing date"),
+        pytest.param(without("description"), id="missing description"),
+        pytest.param(with_value("amount", "abc"), id="amount not a number"),
+        pytest.param(with_value("date", "09.11.2026"), id="date in wrong format"),
+        pytest.param(with_value("date", "2026-02-30"), id="impossible date"),
+        pytest.param(with_value("description", 123), id="description not a string"),
+        pytest.param(with_value("amount", "-10.00"), id="negative amount"),
+        pytest.param(with_value("currency", "XYZ"), id="unsupported currency"),
+        pytest.param(with_value("description", "   "), id="blank description"),
+    ],
+)
+def test_post_expense_rejects_invalid_payload_with_422(client, payload):
+    response = client.post("/expenses", json=payload)
+
+    assert response.status_code == 422
