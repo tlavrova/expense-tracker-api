@@ -25,6 +25,8 @@ def budget_status(expenses: list[Expense], budget: Decimal) -> str:
     if budget < 0:
         raise ValueError(f"budget must not be negative, got {budget}")
     spent = sum((e.amount for e in expenses), Decimal("0"))
+    if budget == 0:
+        return "exceeded" if spent > 0 else "ok"
     if spent > budget:
         return "exceeded"
     if spent >= budget * WARNING_THRESHOLD:

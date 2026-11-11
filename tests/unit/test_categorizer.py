@@ -3,16 +3,38 @@ import pytest
 from expense_tracker.categorizer import categorize
 
 
-def test_categorize_uber_as_transport():
-    assert categorize("Uber ride to airport") == "transport"
+CATEGORY_CASES = [
+    ("Uber ride to airport", "transport"),
+    ("Late night taxi home", "transport"),
+    ("TAXI Oslo S", "transport"),
+    ("Bolt scooter", "transport"),
+    ("Ruter monthly ticket", "transport"),
+    ("Vy train to Bergen", "transport"),
+    ("Flytoget to Gardermoen", "transport"),
+    ("Lidl weekly shop", "groceries"),
+    ("REMA 1000 Grünerløkka", "groceries"),
+    ("rema 1000 majorstuen", "groceries"),
+    ("Kiwi minipris", "groceries"),
+    ("Coop Extra Storo", "groceries"),
+    ("Meny Aker Brygge", "groceries"),
+    ("Cinema tickets", "other"),
+    ("Netflix subscription", "other"),
+    ("Haircut", "other"),
+    ("Birthday gift", "other"),
+    ("Gym membership", "other"),
+    ("Dentist appointment", "other"),
+    ("Navy blue sweater", "other"),
+    ("Heavy metal concert", "other"),
+]
 
 
-def test_categorize_lidl_as_groceries():
-    assert categorize("Lidl weekly shop") == "groceries"
-
-
-def test_categorize_unknown_description_as_other():
-    assert categorize("Cinema tickets") == "other"
+@pytest.mark.parametrize(
+    ("description", "expected"),
+    CATEGORY_CASES,
+    ids=[description for description, _ in CATEGORY_CASES],
+)
+def test_categorize(description, expected):
+    assert categorize(description) == expected
 
 
 def test_categorize_rejects_blank_description():

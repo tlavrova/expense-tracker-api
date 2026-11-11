@@ -53,19 +53,22 @@ def test_total_by_category_sums_each_category():
 def test_total_by_category_of_no_expenses_is_empty():
     assert total_by_category([]) == {}
 
-def test_budget_status_returns_ok_below_80_percent():
-    expenses = [make_expense("500.00", date(2026, 11, 1))]
-    assert budget_status(expenses, Decimal("1000")) == "ok"
 
-
-def test_budget_status_returns_warning_at_80_percent():
-    expenses = [make_expense("800.00", date(2026, 11, 1))]
-    assert budget_status(expenses, Decimal("1000")) == "warning"
-
-
-def test_budget_status_returns_exceeded_over_100_percent():
-    expenses = [make_expense("1000.01", date(2026, 11, 1))]
-    assert budget_status(expenses, Decimal("1000")) == "exceeded"
+@pytest.mark.parametrize(
+    ("spent", "budget", "expected"),
+    [
+        pytest.param("0.00", "1000", "ok", id="0%"),
+        pytest.param("799.00", "1000", "ok", id="79.9%"),
+        pytest.param("800.00", "1000", "warning", id="80%"),
+        pytest.param("1000.00", "1000", "warning", id="100%"),
+        pytest.param("1000.10", "1000", "exceeded", id="100.01%"),
+        pytest.param("0.00", "0", "ok", id="zero budget, nothing spent"),
+        pytest.param("0.01", "0", "exceeded", id="zero budget, anything spent"),
+    ],
+)
+def test_budget_status(spent, budget, expected):
+    expenses = [make_expense(spent, date(2026, 11, 1))]
+    assert budget_status(expenses, Decimal(budget)) == expected
 
 
 def test_budget_status_rejects_negative_budget():
