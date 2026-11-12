@@ -6,6 +6,8 @@ import pytest
 from expense_tracker.db import add_expense, delete_expense, get_expense, list_expenses
 from expense_tracker.models import Expense
 
+pytestmark = pytest.mark.integration
+
 
 def test_add_expense_saves_it_and_returns_an_id(db_session):
     expense = Expense(

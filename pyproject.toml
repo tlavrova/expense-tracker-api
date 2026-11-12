@@ -14,6 +14,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest",
+    "pytest-cov",
 ]
 
 [tool.setuptools.packages.find]
@@ -22,3 +23,9 @@ include = ["expense_tracker*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+addopts = "--strict-markers -m 'not external'"
+markers = [
+    "integration: uses the database or the API (slower than unit tests)",
+    "slow: takes noticeably longer than the rest",
+    "external: calls a real network service; skipped unless selected with -m external",
+]
