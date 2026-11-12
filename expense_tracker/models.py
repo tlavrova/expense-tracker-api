@@ -2,7 +2,6 @@ from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
 
-
 SUPPORTED_CURRENCIES = {"NOK", "EUR", "USD", "SEK"}
 
 
@@ -22,4 +21,3 @@ class Expense:
             raise ValueError("description must not be empty")
         if self.currency not in SUPPORTED_CURRENCIES:
             raise ValueError(f"unsupported currency: {self.currency}")
-    

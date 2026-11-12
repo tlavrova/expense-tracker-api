@@ -2,7 +2,6 @@ import pytest
 
 from expense_tracker.categorizer import categorize
 
-
 CATEGORY_CASES = [
     ("Uber ride to airport", "transport"),
     ("Late night taxi home", "transport"),

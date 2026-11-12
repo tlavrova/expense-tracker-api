@@ -71,7 +71,7 @@ def create_expense(
             category=category,
         )
     except ValueError as error:
-        raise HTTPException(status_code=422, detail=str(error))
+        raise HTTPException(status_code=422, detail=str(error)) from error
     expense.id = db.add_expense(session, expense)
     return ExpenseOut(**asdict(expense))
 

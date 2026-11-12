@@ -1,7 +1,7 @@
 from decimal import Decimal
-import pytest
 
 import httpx2
+import pytest
 
 from expense_tracker import currency
 
