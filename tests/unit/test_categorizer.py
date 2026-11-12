@@ -40,7 +40,3 @@ def test_categorize(description, expected):
 def test_categorize_rejects_blank_description():
     with pytest.raises(ValueError, match="description"):
         categorize("   ")
-
-
-def test_ci_drill_deliberately_fails():
-    assert categorize("Uber ride") == "groceries"
