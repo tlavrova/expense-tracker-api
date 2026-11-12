@@ -1,10 +1,6 @@
 # Expense Tracker API
 
-
-
-\[!\[tests\]([https://github.com/tlavrova/expense-tracker-api/actions/workflows/tests.yml/badge.svg)\](https://github.com/tlavrova/expense-tracker-api/actions/workflows/tests.yml)](https://github.com/tlavrova/expense-tracker-api/actions/workflows/tests.yml/badge.svg)](https://github.com/tlavrova/expense-tracker-api/actions/workflows/tests.yml))
-
-
+[![tests](https://github.com/tlavrova/expense-tracker-api/actions/workflows/tests.yml/badge.svg)](https://github.com/tlavrova/expense-tracker-api/actions/workflows/tests.yml)
 
 A small FastAPI service for tracking expenses: categorizing them, summarizing monthly totals, checking budgets and converting currencies. Built test-first as a practice project.
 
