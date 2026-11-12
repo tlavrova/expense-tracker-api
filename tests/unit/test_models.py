@@ -32,7 +32,7 @@ def test_expense_rejects_negative_amount():
             category="other",
         )
 
-    
+
 def test_expense_rejects_empty_description():
     with pytest.raises(ValueError, match="description"):
         Expense(
