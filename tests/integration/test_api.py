@@ -1,6 +1,12 @@
+from datetime import date
+
 import pytest
 
+from expense_tracker.api import app, get_today
 from expense_tracker.db import add_expense
+
+pytestmark = pytest.mark.integration
+
 
 def test_post_expense_returns_201_with_the_saved_expense(client):
     response = client.post(
@@ -103,7 +109,6 @@ def with_value(field, value):
         pytest.param({}, id="empty body"),
         pytest.param(without("amount"), id="missing amount"),
         pytest.param(without("currency"), id="missing currency"),
-        pytest.param(without("date"), id="missing date"),
         pytest.param(without("description"), id="missing description"),
         pytest.param(with_value("amount", "abc"), id="amount not a number"),
         pytest.param(with_value("date", "09.11.2026"), id="date in wrong format"),
@@ -118,3 +123,12 @@ def test_post_expense_rejects_invalid_payload_with_422(client, payload):
     response = client.post("/expenses", json=payload)
 
     assert response.status_code == 422
+
+
+def test_post_expense_without_date_uses_today(client):
+    app.dependency_overrides[get_today] = lambda: date(2026, 2, 28)
+
+    response = client.post("/expenses", json=without("date"))
+
+    assert response.status_code == 201
+    assert response.json()["date"] == "2026-02-28"

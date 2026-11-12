@@ -34,10 +34,14 @@ def get_session() -> Iterator[Session]:
         yield session
 
 
+def get_today() -> datetime.date:
+    return datetime.date.today()
+
+
 class ExpenseIn(BaseModel):
     amount: Decimal
     currency: str
-    date: datetime.date
+    date: datetime.date | None = None
     description: str
     category: str | None = None
 
@@ -52,13 +56,17 @@ class ExpenseOut(BaseModel):
 
 
 @app.post("/expenses", status_code=201)
-def create_expense(payload: ExpenseIn, session: Session = Depends(get_session)) -> ExpenseOut:
+def create_expense(
+    payload: ExpenseIn,
+    session: Session = Depends(get_session),
+    today: datetime.date = Depends(get_today),
+) -> ExpenseOut:
     try:
         category = payload.category or categorize(payload.description)
         expense = Expense(
             amount=payload.amount,
             currency=payload.currency,
-            date=payload.date,
+            date=payload.date or today,
             description=payload.description,
             category=category,
         )
